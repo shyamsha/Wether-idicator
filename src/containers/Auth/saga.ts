@@ -7,9 +7,9 @@ import { AuthActionTypes } from "./types";
 
 type SagaAction<T> = Action & { payload: T };
 
-function* login() {
+function* login({ payload: params }: SagaAction<{}>) {
   try {
-    const res = yield call(Api.test);
+    const res = yield call(Api.login,params);
     if (res.error) {
       yield put(loginError(res.error));
     } else {
@@ -27,8 +27,7 @@ function* login() {
 function* watchFetchRequest() {
     yield takeLatest(AuthActionTypes.LOGIN_REQUEST, login);
   }
-  
+
   export function* authSaga() {
     yield all([fork(watchFetchRequest)]);
   }
-  

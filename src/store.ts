@@ -1,3 +1,4 @@
+import { WetherState } from './containers/Wether/types';
 import { combineReducers, Dispatch, Action, AnyAction } from 'redux'
 import { RouterState, connectRouter } from 'connected-react-router';
 import { all, fork } from 'redux-saga/effects';
@@ -6,6 +7,8 @@ import { AuthState } from './containers/Auth/types';
 import { authReducer } from './containers/Auth/reducers';
 import { Reducer } from 'typesafe-actions';
 import { authSaga } from './containers/Auth/saga';
+import { wetherReducer } from './containers/Wether/reducers';
+import { wetherSaga } from './containers/Wether/saga';
 
 // The top-level state object.
 //
@@ -14,6 +17,7 @@ import { authSaga } from './containers/Auth/saga';
 export interface ApplicationState {
   auth: AuthState;
   router: RouterState<History.PoorMansUnknown>
+  wether:WetherState
 }
 
 // Additional props for connected React components. This prop is passed by default with `connect()`
@@ -27,6 +31,7 @@ export interface ConnectedReduxProps<A extends Action = AnyAction> {
 export const createRootReducer = (history: History) =>
   combineReducers({
     auth: authReducer as Reducer<AuthState, AnyAction>,
+    wether: wetherReducer as Reducer<WetherState, AnyAction>,
     router: connectRouter(history)
   })
 
@@ -35,4 +40,5 @@ export const createRootReducer = (history: History) =>
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 export function* rootSaga() {
   yield all([fork(authSaga)])
+  yield all([fork(wetherSaga)])
 }
